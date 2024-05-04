@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         # os: [macOS-10.14, windows-2016, windows-latest, ubuntu-18.04, ubuntu-latest]
-        os: [windows-latest, ubuntu-latest]
+        os: [ubuntu-latest]
     steps:
       - uses: chrislennon/action-aws-cli@v1.1
       # All commands after this point have access to the AWS CLI
