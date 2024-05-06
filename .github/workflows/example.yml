@@ -1,0 +1,11 @@
+name: Example workflow for Example Action
+on: [push]
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ohthepain/action-js-ts-example@v1.1
+      with:
+        who-to-greet: 'Mona the Octocat'
+
