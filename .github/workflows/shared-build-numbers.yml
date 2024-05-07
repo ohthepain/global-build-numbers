@@ -16,7 +16,8 @@ jobs:
     steps:
       # https://github.com/chrislennon/action-aws-cli/blob/master/README.md
       # - uses: chrislennon/action-aws-cli@v1.1
-      - uses: ohthepain/action-install-aws-cli@v0.1
+      - name: install aws cli
+        uses: ohthepain/action-install-aws-cli@v0.2
       # All commands after this point have access to the AWS CLI
       - run: aws s3 ls
         env:
