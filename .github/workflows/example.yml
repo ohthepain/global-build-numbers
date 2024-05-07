@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: ohthepain/github-action-js-example@v1.3
+    - uses: ohthepain/github-action-js-example@v1.9
       with:
         who-to-greet: 'Mona the Octocat'
 
