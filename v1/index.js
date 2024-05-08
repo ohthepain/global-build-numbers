@@ -32464,6 +32464,7 @@ async function set() {
                     stdout += data.toString();
                 },
                 stderr: (data) => {
+                    console.log('stderr: <${data.toString()}>')
                     stderr += data.toString();
                 }
             }

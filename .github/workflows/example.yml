@@ -23,7 +23,7 @@ jobs:
           AWS_DEFAULT_REGION: 'eu-central-1'
       # All commands after this point have access to the AWS CLI
       - name: Set version number
-        uses: ohthepain/global-build-numbers@v0.6
+        uses: ohthepain/global-build-numbers@v0.7
         with:
             DYNAMO_TABLE_NAME: 'build-numbers'
             DYNAMO_PARTITION_KEY: 'product-id'
