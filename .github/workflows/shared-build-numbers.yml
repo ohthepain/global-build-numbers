@@ -8,16 +8,15 @@ permissions:
 
 jobs:
   listS3:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        # os: [macOS-10.14, windows-2016, windows-latest, ubuntu-18.04, ubuntu-latest]
-        os: [ubuntu-latest]
+    # runs-on: ${{ matrix.os }}
+    # strategy:
+    #   matrix:
+    #     # os: [macOS-10.14, windows-2016, windows-latest, ubuntu-18.04, ubuntu-latest]
+    #     os: [windows-latest]
+    runs-on: windows-latest
     steps:
-      # https://github.com/chrislennon/action-aws-cli/blob/master/README.md
-      # - uses: chrislennon/action-aws-cli@v1.1
       - name: install aws cli
-        uses: ohthepain/action-install-aws-cli@v0.2
+        uses: ohthepain/action-install-aws-cli@v0.4
       # All commands after this point have access to the AWS CLI
       - run: aws s3 ls
         env:
