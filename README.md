@@ -26,7 +26,7 @@ name: Bump Version Test
 on:
   push
 jobs:
-  listS3:
+  buildSomething:
     runs-on: ubuntu-latest
     steps:
       - uses: ohthepain/global-build-numbers@v1
