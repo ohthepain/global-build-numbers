@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Hello world action step
         id: hello
-        uses: ohthepain/action-js-example@v0.5
+        uses: ohthepain/action-js-example@v0.6
         with:
           who-to-greet: 'Global Build Number'
       # Use the output from the `hello` step
