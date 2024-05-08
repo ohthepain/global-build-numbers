@@ -32407,13 +32407,8 @@ async function increment() {
         };
         
         const key = `{\"${dynamoPartitionKey}\" : {"S" : \"${productId}\"}}`
-
-        const item = `{\"${dynamoPartitionKey}\": {"S": \"${productId}\"}, "VERSION": {"N": "11"} }`
-        // console.log(item);
         const tableName = `${dynamoTableName}`;
-        // console.log(tableName)
         const incrExpression = `{":incr":{"N":"1"}}`;
-        // console.log(incrExpression);
 
         await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec)("aws", [
             "dynamodb", 
@@ -32474,10 +32469,8 @@ async function set() {
             }
         };    
 
-        const item = `{\"${dynamoPartitionKey}\": {"S": \"${productId}\"}, "VERSION": {"N": "${value}"} }`
-        console.log(item);
+        const item = `{"${dynamoPartitionKey}": {"S": "${productId}"}, "VERSION": {"N": ${value}} }`
         const tableName = `${dynamoTableName}`;
-        console.log(tableName)
         var returnValue = await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec)("aws", [
             "dynamodb", 
             "put-item", 
