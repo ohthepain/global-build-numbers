@@ -1,7 +1,12 @@
+name: Example of example action
+
 on: [push]
 
+permissions:
+  contents: read
+
 jobs:
-  hello_world_job:
+  hello_world:
     runs-on: ubuntu-latest
     name: A job to say hello
     steps:
@@ -10,7 +15,7 @@ jobs:
         id: hello
         uses: ohthepain/action-js-example@v0.4
         with:
-          who-to-greet: 'Mona the Octocat'
+          who-to-greet: 'Global Build Number'
       # Use the output from the `hello` step
       - name: Get the output time
         run: echo "The time was ${{ steps.hello.outputs.time }}"
