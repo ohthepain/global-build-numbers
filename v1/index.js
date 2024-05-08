@@ -32498,7 +32498,7 @@ async function set() {
     }
 }
 
-increment();
+set();
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({ set, increment });
 

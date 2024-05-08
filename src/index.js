@@ -120,7 +120,7 @@ async function set() {
     }
 }
 
-increment();
+set();
 
 export default { set, increment };
 
