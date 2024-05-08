@@ -15,8 +15,8 @@ jobs:
     #     os: [windows-latest]
     runs-on: ubuntu-latest
     steps:
-      # - name: install aws cli
-      #   uses: ohthepain/action-install-aws-cli@v0.4
+      - name: install aws cli
+        uses: ohthepain/action-install-aws-cli@v0.5
       # All commands after this point have access to the AWS CLI
       - run: aws s3 ls
         env:
