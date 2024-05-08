@@ -22,8 +22,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: 'eu-central-1'
       # All commands after this point have access to the AWS CLI
+      - name: Test AWS S3
+        run: aws s3 ls
       - name: Set version number
-        uses: ohthepain/global-build-numbers@v0.7
+        uses: ohthepain/global-build-numbers@main
         with:
             DYNAMO_TABLE_NAME: 'build-numbers'
             DYNAMO_PARTITION_KEY: 'product-id'
