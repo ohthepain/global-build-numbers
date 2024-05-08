@@ -1,0 +1,41 @@
+name: 'Global Build Numbers'
+description: 'Manage global build numbers that can be used across projects'
+inputs:
+  AWS_ACCESS_KEY_ID:
+    description: 'AWS Access Key ID for a user with AWS permissions'
+    required: true
+    default: ''
+  AWS_SECRET_ACCESS_KEY:
+    description: 'AWS Access Key (value)'
+    required: true
+    default: ''  
+  AWS_DEFAULT_REGION:
+    description: 'Default region'
+    required: true
+    default: ''
+  DYNAMO_TABLE_NAME:
+    description: 'Dynamo table name'
+    required: true
+    default: 'version-numbers'
+  DYNAMO_PARTITION_KEY:
+    description: 'Dynamo table partition key (must be type string)'
+    required: true
+    default: 'product-id'
+  PRODUCT_ID:
+    description: 'Arbitrary string to identify the number sequence'
+    required: true
+    default: 'My Product'
+  VALUE:
+    description: 'Value for set operations'
+    required: false
+    default: '0'
+  # DYNAMO_KEY_NAME:
+  #   description: 'Dynamo table key'
+  #   required: true
+  #   default: 'build-number'
+outputs:
+  result:
+    description: 'Result of the operation'
+runs:
+  using: 'node20'
+  main: 'v1/index.js'

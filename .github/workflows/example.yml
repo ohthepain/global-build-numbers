@@ -1,4 +1,5 @@
-name: Example of example action
+
+name: Global Build Numbers
 
 on: [push]
 
@@ -6,16 +7,23 @@ permissions:
   contents: read
 
 jobs:
-  hello_world:
-    runs-on: ubuntu-latest
-    name: A job to say hello
+  listS3:
+    # runs-on: ${{ matrix.os }}
+    # strategy:
+    #   matrix:
+    #     # os: [macOS-10.14, windows-2016, windows-latest, ubuntu-18.04, ubuntu-latest]
+    #     os: [windows-latest]
+    runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Hello world action step
-        id: hello
-        uses: ohthepain/action-js-example@v0.7
-        with:
-          who-to-greet: 'Global Build Number'
-      # Use the output from the `hello` step
-      - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
+      - name: install aws cli
+        uses: ohthepain/action-install-aws-cli@v1.0
+      # All commands after this point have access to the AWS CLI
+      - run: aws s3 ls
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'eu-central-1'
+          DYNAMO_TABLE_NAME: 'build-numbers'
+          DYNAMO_PARTITION_KEY: 'product-id'
+          # DYNAMO_KEY_NAME: 'product'
+          PRODUCT_ID: 'game-config'

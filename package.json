@@ -1,0 +1,19 @@
+{
+  "name": "global-build-numbers",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">   <a href=\"https://github.com:ohthepain/action-install-aws-cli\"><img alt=\"GitHub Actions status\" src=\"https://github.com/ohthepain/action-install-aws-cli/workflows/master%20builds/badge.svg\"></a> </p>",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "debug": "node v1/index.js",
+    "build": "ncc build src/index.js --license licenses.txt -o ./v1/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@actions/exec": "^1.1.1",
+    "@actions/github": "^6.0.0"
+  }
+}
