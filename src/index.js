@@ -91,7 +91,7 @@ async function set() {
             }
         };    
 
-        const item = `{"${dynamoPartitionKey}": {"S": "${productId}"}, "VERSION": {"N": ${value}} }`
+        const item = `{"${dynamoPartitionKey}": {"S": "${productId}"}, "VERSION": {"N": "${value}"} }`
         const tableName = `${dynamoTableName}`;
         var returnValue = await exec("aws", [
             "dynamodb", 

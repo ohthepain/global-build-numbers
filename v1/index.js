@@ -32469,7 +32469,7 @@ async function set() {
             }
         };    
 
-        const item = `{"${dynamoPartitionKey}": {"S": "${productId}"}, "VERSION": {"N": ${value}} }`
+        const item = `{"${dynamoPartitionKey}": {"S": "${productId}"}, "VERSION": {"N": "${value}"} }`
         const tableName = `${dynamoTableName}`;
         var returnValue = await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec)("aws", [
             "dynamodb", 
