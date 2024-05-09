@@ -92,16 +92,21 @@ async function set() {
             }
         };    
 
-        const item = `{"${dynamoPartitionKey}": {"S": "${productId}"}, "VERSION": {"N": "${value}"} }`
-        const tableName = `${dynamoTableName}`;
-        var returnValue = await exec("aws", [
-            "dynamodb", 
-            "put-item", 
-            "--table-name",
-            tableName,
-            "--item",
-            item
-        ], options);
+        // const item = `{"${dynamoPartitionKey}": {"S": "${productId}"}, "VERSION": {"N": "${value}"} }`
+        // const tableName = `${dynamoTableName}`;
+        // var returnValue = await exec("aws", [
+        //     "dynamodb", 
+        //     "put-item", 
+        //     "--table-name",
+        //     tableName,
+        //     "--item",
+        //     item
+        // ], options);
+        // console.log(`returnValue ${returnValue} stdOutResults ${stdout}, stdErrResults ${stderr}`)
+
+        const awsCommand = `aws dynamodb put-item --table-name ${dynamoTableName} --item '{"${dynamoPartitionKey}": {"S": ${productId}}, "VERSION": {"N": "1"} }'`;
+        console.log(`awsCommand ${awsCommand}`);
+        await exec(awsCommand, [], options);
         console.log(`returnValue ${returnValue} stdOutResults ${stdout}, stdErrResults ${stderr}`)
 
         core.setOutput("result", value);

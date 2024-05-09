@@ -32470,16 +32470,21 @@ async function set() {
             }
         };    
 
-        const item = `{"${dynamoPartitionKey}": {"S": "${productId}"}, "VERSION": {"N": "${value}"} }`
-        const tableName = `${dynamoTableName}`;
-        var returnValue = await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec)("aws", [
-            "dynamodb", 
-            "put-item", 
-            "--table-name",
-            tableName,
-            "--item",
-            item
-        ], options);
+        // const item = `{"${dynamoPartitionKey}": {"S": "${productId}"}, "VERSION": {"N": "${value}"} }`
+        // const tableName = `${dynamoTableName}`;
+        // var returnValue = await exec("aws", [
+        //     "dynamodb", 
+        //     "put-item", 
+        //     "--table-name",
+        //     tableName,
+        //     "--item",
+        //     item
+        // ], options);
+        // console.log(`returnValue ${returnValue} stdOutResults ${stdout}, stdErrResults ${stderr}`)
+
+        const awsCommand = `aws dynamodb put-item --table-name ${dynamoTableName} --item '{"${dynamoPartitionKey}": {"S": ${productId}}, "VERSION": {"N": "1"} }'`;
+        console.log(`awsCommand ${awsCommand}`);
+        await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec)(awsCommand, [], options);
         console.log(`returnValue ${returnValue} stdOutResults ${stdout}, stdErrResults ${stderr}`)
 
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput("result", value);
