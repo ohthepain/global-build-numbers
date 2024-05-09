@@ -104,7 +104,13 @@ async function set() {
         // ], options);
         // console.log(`returnValue ${returnValue} stdOutResults ${stdout}, stdErrResults ${stderr}`)
 
-        const awsCommand = `aws dynamodb put-item --table-name ${dynamoTableName} --item '{"${dynamoPartitionKey}": {"S": "${productId}"}, "VERSION": {"N": "1"} }'`;
+        const item = {
+            "product-id": { "S": productId },
+            "VERSION": { "N": "1" }
+        };
+        const itemJson = JSON.stringify(item);
+
+        const awsCommand = `aws dynamodb put-item --table-name ${dynamoTableName} --item '${itemJson}'`;
         console.log(`awsCommand ${awsCommand}`);
         await exec(awsCommand, [], options);
         console.log(`returnValue ${returnValue} stdOutResults ${stdout}, stdErrResults ${stderr}`)
