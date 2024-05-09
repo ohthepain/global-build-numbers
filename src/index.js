@@ -105,7 +105,7 @@ async function set() {
         // console.log(`returnValue ${returnValue} stdOutResults ${stdout}, stdErrResults ${stderr}`)
 
         const item = {
-            "product-id": { "S": productId },
+            "product-id": { "S": `"${productId}"` },
             "VERSION": { "N": "1" }
         };
         const itemJson = JSON.stringify(item);
