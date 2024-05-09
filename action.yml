@@ -16,7 +16,7 @@ inputs:
   DYNAMO_TABLE_NAME:
     description: 'Dynamo table name'
     required: true
-    default: 'version-numbers'
+    default: 'build-numbers'
   DYNAMO_PARTITION_KEY:
     description: 'Dynamo table partition key (must be type string)'
     required: true
