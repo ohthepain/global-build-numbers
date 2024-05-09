@@ -32511,8 +32511,8 @@ async function set() {
 }
 
 async function main() {
-    const action = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('ACTION');
-    switch (action) {
+    const op = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('OPERATION');
+    switch (op) {
         case "increment":
             await increment();
             break;
@@ -32520,7 +32520,7 @@ async function main() {
             await set();
             break;
         default:
-            _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed("action must be one of [set | increment]")
+            _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed("OPERATION must be one of [set | increment]")
     }
 }
 

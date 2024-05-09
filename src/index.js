@@ -133,8 +133,8 @@ async function set() {
 }
 
 async function main() {
-    const action = core.getInput('ACTION');
-    switch (action) {
+    const op = core.getInput('OPERATION');
+    switch (op) {
         case "increment":
             await increment();
             break;
@@ -142,7 +142,7 @@ async function main() {
             await set();
             break;
         default:
-            core.setFailed("action must be one of [set | increment]")
+            core.setFailed("OPERATION must be one of [set | increment]")
     }
 }
 
