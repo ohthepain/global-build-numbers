@@ -24,9 +24,33 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: 'eu-central-1'
+
       - name: Set version number
         uses: ohthepain/global-build-numbers@main
         with:
-            DYNAMO_TABLE_NAME: 'build-numbers'
-            DYNAMO_PARTITION_KEY: 'product-id'
-            PRODUCT_ID: 'game-config'
+          DYNAMO_TABLE_NAME: 'build-numbers'
+          DYNAMO_PARTITION_KEY: 'product-id'
+          PRODUCT_ID: 'game-config'
+          OPERATION: 'set'
+          VALUE: 75
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'eu-central-1'
+
+      - name: Increment version number
+        uses: ohthepain/global-build-numbers@main
+        id: inc-ver-num
+        with:
+          DYNAMO_TABLE_NAME: 'build-numbers'
+          DYNAMO_PARTITION_KEY: 'product-id'
+          PRODUCT_ID: 'game-config'
+          OPERATION: 'increment'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'eu-central-1'
+
+      - name: Version number should be 76
+        run: echo ${{ steps.inc-ver-num.outputs.result }}
+
