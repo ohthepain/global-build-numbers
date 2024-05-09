@@ -32385,10 +32385,12 @@ async function increment() {
         // const awsAccessKeyId = core.getInput('AWS_ACCESS_KEY_ID');
         // const awsSecretAccessKey = core.getInput('AWS_SECRET_ACCESS_KEY');
         // const awsDefaultRegion = core.getInput('AWS_DEFAULT_REGION');
+
         const dynamoTableName = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('DYNAMO_TABLE_NAME');
         const dynamoPartitionKey = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('DYNAMO_PARTITION_KEY');
         const productId = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('PRODUCT_ID');
-        // const dynamoTableName = "version-numbers"
+
+        // const dynamoTableName = "build-numbers"
         // const dynamoPartitionKey = "product-id"
         // const productId = "My Product"
 
@@ -32405,10 +32407,12 @@ async function increment() {
                 }
             }
         };
-        
-        const key = `{\"${dynamoPartitionKey}\" : {"S" : \"${productId}\"}}`
+
+        const keyJson = { [dynamoPartitionKey]: { "S": `${productId}` } };        
+        const key = JSON.stringify(keyJson);
         const tableName = `${dynamoTableName}`;
-        const incrExpression = `{":incr":{"N":"1"}}`;
+        const incrExpression = {":incr":{"N":"1"}};
+        const incrJson = JSON.stringify(incrExpression);
 
         await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec)("aws", [
             "dynamodb", 
@@ -32420,7 +32424,7 @@ async function increment() {
             "--update-expression",
             "SET VERSION = VERSION + :incr",
             "--expression-attribute-values",
-            incrExpression,
+            incrJson,
             "--return-values",
             "UPDATED_NEW",
             "--output",
@@ -32430,7 +32434,7 @@ async function increment() {
         // console.log(`stdOutResults ${stdout}, stdErrResults ${stderr}`)
 
         const result = stdout.match(/\w+\s+(\d+)/)[1];
-        console.log(`result ${result}`)
+        // console.log(`result ${result}`)
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput("result", result);
     } catch (error) {
         if (error instanceof Error) {
@@ -32446,13 +32450,15 @@ async function set() {
         // const awsAccessKeyId = core.getInput('AWS_ACCESS_KEY_ID');
         // const awsSecretAccessKey = core.getInput('AWS_SECRET_ACCESS_KEY');
         // const awsDefaultRegion = core.getInput('AWS_DEFAULT_REGION');
+
         const dynamoTableName = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('DYNAMO_TABLE_NAME');
         const dynamoPartitionKey = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('DYNAMO_PARTITION_KEY');
         const productId = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('PRODUCT_ID');
-        // const dynamoTableName = "version-numbers"
+        const value = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('VALUE');
+        // const dynamoTableName = "build-numbers"
         // const dynamoPartitionKey = "product-id"
         // const productId = "My Product"
-        const value = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('VALUE');
+        // const value = "77";
 
         let stdout = '';
         let stderr = '';
@@ -32460,11 +32466,11 @@ async function set() {
         const options = {
             listeners: {
                 stdout: (data) => {
-                    console.log('got stdout stuff')
+                    console.log(`stdout: <${data.toString()}>`)
                     stdout += data.toString();
                 },
                 stderr: (data) => {
-                    console.log('stderr: <${data.toString()}>')
+                    console.log(`stderr: <${data.toString()}>`)
                     stderr += data.toString();
                 }
             }
@@ -32483,15 +32489,16 @@ async function set() {
         // console.log(`returnValue ${returnValue} stdOutResults ${stdout}, stdErrResults ${stderr}`)
 
         const item = {
-            "product-id": { "S": `"${productId}"` },
-            "VERSION": { "N": "1" }
+            [dynamoPartitionKey]: { "S": `${productId}` }, // Use productId as the value
+            "VERSION": { "N": `${value}` }
         };
         const itemJson = JSON.stringify(item);
+        // console.log(`itemJson ${itemJson}`);
 
-        const awsCommand = `aws dynamodb put-item --table-name ${dynamoTableName} --item '${itemJson}'`;
-        console.log(`awsCommand ${awsCommand}`);
-        await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec)(awsCommand, [], options);
-        console.log(`returnValue ${returnValue} stdOutResults ${stdout}, stdErrResults ${stderr}`)
+        const awsCommand = `aws dynamodb put-item --table-name ${dynamoTableName} --item `;
+        // console.log(`${awsCommand}`);
+        var returnValue = await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec)(awsCommand, [itemJson], options);
+        // console.log(`returnValue ${returnValue} stdOutResults ${stdout}, stdErrResults ${stderr}`)
 
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput("result", value);
     } catch (error) {
@@ -32503,9 +32510,23 @@ async function set() {
     }
 }
 
-set();
+async function main() {
+    const action = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('ACTION');
+    switch (action) {
+        case "increment":
+            await increment();
+            break;
+        case "set":
+            await set();
+            break;
+        default:
+            _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed("action must be one of [set | increment]")
+    }
+}
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({ set, increment });
+main();
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({ main, set, increment });
 
 
 })();

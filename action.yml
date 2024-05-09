@@ -1,18 +1,22 @@
 name: 'Global Build Numbers'
 description: 'Manage global build numbers that can be used across projects'
 inputs:
-  AWS_ACCESS_KEY_ID:
-    description: 'AWS Access Key ID for a user with AWS permissions'
+  # AWS_ACCESS_KEY_ID:
+  #   description: 'AWS Access Key ID for a user with AWS permissions'
+  #   required: true
+  #   default: ''
+  # AWS_SECRET_ACCESS_KEY:
+  #   description: 'AWS Access Key (value)'
+  #   required: true
+  #   default: ''  
+  # AWS_DEFAULT_REGION:
+  #   description: 'Default region'
+  #   required: true
+  #   default: ''
+  OPERATION:
+    description: 'Operation to perform: [set | increment]'
     required: true
-    default: ''
-  AWS_SECRET_ACCESS_KEY:
-    description: 'AWS Access Key (value)'
-    required: true
-    default: ''  
-  AWS_DEFAULT_REGION:
-    description: 'Default region'
-    required: true
-    default: ''
+    default: 'increment'
   DYNAMO_TABLE_NAME:
     description: 'Dynamo table name'
     required: true

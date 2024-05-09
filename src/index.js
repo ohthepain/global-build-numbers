@@ -7,10 +7,12 @@ async function increment() {
         // const awsAccessKeyId = core.getInput('AWS_ACCESS_KEY_ID');
         // const awsSecretAccessKey = core.getInput('AWS_SECRET_ACCESS_KEY');
         // const awsDefaultRegion = core.getInput('AWS_DEFAULT_REGION');
+
         const dynamoTableName = core.getInput('DYNAMO_TABLE_NAME');
         const dynamoPartitionKey = core.getInput('DYNAMO_PARTITION_KEY');
         const productId = core.getInput('PRODUCT_ID');
-        // const dynamoTableName = "version-numbers"
+
+        // const dynamoTableName = "build-numbers"
         // const dynamoPartitionKey = "product-id"
         // const productId = "My Product"
 
@@ -27,10 +29,12 @@ async function increment() {
                 }
             }
         };
-        
-        const key = `{\"${dynamoPartitionKey}\" : {"S" : \"${productId}\"}}`
+
+        const keyJson = { [dynamoPartitionKey]: { "S": `${productId}` } };        
+        const key = JSON.stringify(keyJson);
         const tableName = `${dynamoTableName}`;
-        const incrExpression = `{":incr":{"N":"1"}}`;
+        const incrExpression = {":incr":{"N":"1"}};
+        const incrJson = JSON.stringify(incrExpression);
 
         await exec("aws", [
             "dynamodb", 
@@ -42,7 +46,7 @@ async function increment() {
             "--update-expression",
             "SET VERSION = VERSION + :incr",
             "--expression-attribute-values",
-            incrExpression,
+            incrJson,
             "--return-values",
             "UPDATED_NEW",
             "--output",
@@ -52,7 +56,7 @@ async function increment() {
         // console.log(`stdOutResults ${stdout}, stdErrResults ${stderr}`)
 
         const result = stdout.match(/\w+\s+(\d+)/)[1];
-        console.log(`result ${result}`)
+        // console.log(`result ${result}`)
         core.setOutput("result", result);
     } catch (error) {
         if (error instanceof Error) {
@@ -68,13 +72,15 @@ async function set() {
         // const awsAccessKeyId = core.getInput('AWS_ACCESS_KEY_ID');
         // const awsSecretAccessKey = core.getInput('AWS_SECRET_ACCESS_KEY');
         // const awsDefaultRegion = core.getInput('AWS_DEFAULT_REGION');
+
         const dynamoTableName = core.getInput('DYNAMO_TABLE_NAME');
         const dynamoPartitionKey = core.getInput('DYNAMO_PARTITION_KEY');
         const productId = core.getInput('PRODUCT_ID');
-        // const dynamoTableName = "version-numbers"
+        const value = core.getInput('VALUE');
+        // const dynamoTableName = "build-numbers"
         // const dynamoPartitionKey = "product-id"
         // const productId = "My Product"
-        const value = core.getInput('VALUE');
+        // const value = "77";
 
         let stdout = '';
         let stderr = '';
@@ -82,11 +88,11 @@ async function set() {
         const options = {
             listeners: {
                 stdout: (data) => {
-                    console.log('got stdout stuff')
+                    console.log(`stdout: <${data.toString()}>`)
                     stdout += data.toString();
                 },
                 stderr: (data) => {
-                    console.log('stderr: <${data.toString()}>')
+                    console.log(`stderr: <${data.toString()}>`)
                     stderr += data.toString();
                 }
             }
@@ -105,15 +111,16 @@ async function set() {
         // console.log(`returnValue ${returnValue} stdOutResults ${stdout}, stdErrResults ${stderr}`)
 
         const item = {
-            "product-id": { "S": `"${productId}"` },
-            "VERSION": { "N": "1" }
+            [dynamoPartitionKey]: { "S": `${productId}` }, // Use productId as the value
+            "VERSION": { "N": `${value}` }
         };
         const itemJson = JSON.stringify(item);
+        // console.log(`itemJson ${itemJson}`);
 
-        const awsCommand = `aws dynamodb put-item --table-name ${dynamoTableName} --item '${itemJson}'`;
-        console.log(`awsCommand ${awsCommand}`);
-        await exec(awsCommand, [], options);
-        console.log(`returnValue ${returnValue} stdOutResults ${stdout}, stdErrResults ${stderr}`)
+        const awsCommand = `aws dynamodb put-item --table-name ${dynamoTableName} --item `;
+        // console.log(`${awsCommand}`);
+        var returnValue = await exec(awsCommand, [itemJson], options);
+        // console.log(`returnValue ${returnValue} stdOutResults ${stdout}, stdErrResults ${stderr}`)
 
         core.setOutput("result", value);
     } catch (error) {
@@ -125,7 +132,21 @@ async function set() {
     }
 }
 
-set();
+async function main() {
+    const action = core.getInput('ACTION');
+    switch (action) {
+        case "increment":
+            await increment();
+            break;
+        case "set":
+            await set();
+            break;
+        default:
+            core.setFailed("action must be one of [set | increment]")
+    }
+}
 
-export default { set, increment };
+main();
+
+export default { main, set, increment };
 
