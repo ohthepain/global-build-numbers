@@ -17,15 +17,16 @@ jobs:
     steps:
       - name: install aws cli
         uses: ohthepain/action-install-aws-cli@v1.0
-      # All commands after this point have access to the AWS CLI
-      - name: Test AWS S3
+        # All commands after this point have access to the AWS CLI
+
+      - name: Test AWS CLI on S3
         run: aws s3 ls
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: 'eu-central-1'
 
-      - name: Set version number
+      - name: Set build number
         uses: ohthepain/global-build-numbers@main
         with:
           DYNAMO_TABLE_NAME: 'build-numbers'
@@ -38,7 +39,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: 'eu-central-1'
 
-      - name: Increment version number
+      - name: Increment build number
         uses: ohthepain/global-build-numbers@main
         id: increment-build-number
         with:
@@ -51,10 +52,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: 'eu-central-1'
 
-      - name: Version number should be 76
+      - name: Build number should be 76
         run: echo ${{ steps.increment-build-number.outputs.result }}
 
-      - name: Increment version number
+      - name: Get build number
         uses: ohthepain/global-build-numbers@main
         id: get-build-number
         with:
@@ -67,5 +68,5 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: 'eu-central-1'
 
-      - name: Version number should still be 76
+      - name: Build number should still be 76
         run: echo ${{ steps.get-build-number.outputs.result }}
