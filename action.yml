@@ -7,16 +7,20 @@ inputs:
     default: 'increment'
   DYNAMO_TABLE_NAME:
     description: 'Dynamo table name'
-    required: true
+    required: false
     default: 'build-numbers'
   DYNAMO_PARTITION_KEY:
     description: 'Dynamo table partition key (must be type string)'
-    required: true
+    required: false
     default: 'product-id'
   PRODUCT_ID:
     description: 'Arbitrary string to identify the number sequence'
     required: true
-    default: 'My Product'
+    default: 'build-number'
+  CREATE_PRODUCT_ID:
+    description: 'If product id not found then add it set build number to 0'
+    required: false
+    default: true
   VALUE:
     description: 'Value for set operations'
     required: false

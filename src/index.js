@@ -1,21 +1,8 @@
-import * as core from '@actions/core';
-import * as github from '@actions/github';
-import {exec} from '@actions/exec'
+const { exec } = require('@actions/exec')
+const core = require('@actions/core');
 
-async function increment() {
+async function increment(dynamoTableName, dynamoPartitionKey, productId) {
     try {
-        // const awsAccessKeyId = core.getInput('AWS_ACCESS_KEY_ID');
-        // const awsSecretAccessKey = core.getInput('AWS_SECRET_ACCESS_KEY');
-        // const awsDefaultRegion = core.getInput('AWS_DEFAULT_REGION');
-
-        const dynamoTableName = core.getInput('DYNAMO_TABLE_NAME');
-        const dynamoPartitionKey = core.getInput('DYNAMO_PARTITION_KEY');
-        const productId = core.getInput('PRODUCT_ID');
-
-        // const dynamoTableName = "build-numbers"
-        // const dynamoPartitionKey = "product-id"
-        // const productId = "My Product"
-
         let stdout = '';
         let stderr = '';
 
@@ -60,23 +47,21 @@ async function increment() {
         core.setOutput("result", result);
     } catch (error) {
         if (error instanceof Error) {
-            core.setFailed(error.message); // Properly log the error message and fail the action
+            if (core.getInput('CREATE_PRODUCT_ID')) {
+                console.log(`Error: maybe productId=${productId} doesn't exist. Try setting it to 0`);
+                await set(dynamoTableName, dynamoPartitionKey, productId, 0);
+            } else {
+                console.log(`Error: maybe productId=${productId} doesn't exist. Exit.`);
+                core.setFailed(error.message); // Properly log the error message and fail the action
+            }
         } else {
             console.log('Failed to increment');
         }
     }
 }
 
-async function get() {
+async function get(dynamoTableName, dynamoPartitionKey, productId) {
     try {
-        // const dynamoTableName = core.getInput('DYNAMO_TABLE_NAME');
-        // const dynamoPartitionKey = core.getInput('DYNAMO_PARTITION_KEY');
-        // const productId = core.getInput('PRODUCT_ID');
-
-        const dynamoTableName = "build-numbers"
-        const dynamoPartitionKey = "product-id"
-        const productId = "My Product"
-
         const keyJson = { [dynamoPartitionKey]: { "S": `${productId}` } };        
         const key = JSON.stringify(keyJson);
 
@@ -104,21 +89,8 @@ async function get() {
     }    
 }
 
-async function set() {
+async function set(dynamoTableName, dynamoPartitionKey, productId, value) {
     try {
-        // const awsAccessKeyId = core.getInput('AWS_ACCESS_KEY_ID');
-        // const awsSecretAccessKey = core.getInput('AWS_SECRET_ACCESS_KEY');
-        // const awsDefaultRegion = core.getInput('AWS_DEFAULT_REGION');
-
-        const dynamoTableName = core.getInput('DYNAMO_TABLE_NAME');
-        const dynamoPartitionKey = core.getInput('DYNAMO_PARTITION_KEY');
-        const productId = core.getInput('PRODUCT_ID');
-        const value = core.getInput('VALUE');
-        // const dynamoTableName = "build-numbers"
-        // const dynamoPartitionKey = "product-id"
-        // const productId = "My Product"
-        // const value = "77";
-
         let stdout = '';
         let stderr = '';
     
@@ -134,18 +106,6 @@ async function set() {
                 }
             }
         };    
-
-        // const item = `{"${dynamoPartitionKey}": {"S": "${productId}"}, "VERSION": {"N": "${value}"} }`
-        // const tableName = `${dynamoTableName}`;
-        // var returnValue = await exec("aws", [
-        //     "dynamodb", 
-        //     "put-item", 
-        //     "--table-name",
-        //     tableName,
-        //     "--item",
-        //     item
-        // ], options);
-        // console.log(`returnValue ${returnValue} stdOutResults ${stdout}, stdErrResults ${stderr}`)
 
         const item = {
             [dynamoPartitionKey]: { "S": `${productId}` }, // Use productId as the value
@@ -170,22 +130,36 @@ async function set() {
 }
 
 async function main() {
+    const dynamoTableName = core.getInput('DYNAMO_TABLE_NAME');
+    const dynamoPartitionKey = core.getInput('DYNAMO_PARTITION_KEY');
+    const productId = core.getInput('PRODUCT_ID');
+
     const op = core.getInput('OPERATION');
     switch (op) {
         case "increment":
-            await increment();
+            await increment(dynamoTableName, dynamoPartitionKey, productId);
             break;
         case "get":
-            await get();
+            await get(dynamoTableName, dynamoPartitionKey, productId);
             break;
         case "set":
-            await set();
+            const value = core.getInput('VALUE');
+            await set(dynamoTableName, dynamoPartitionKey, productId, value);
             break;
         default:
             core.setFailed("OPERATION must be one of [set | increment]")
     }
 }
 
+async function mainDebug() {
+    const dynamoTableName = "build-numbers"
+    const dynamoPartitionKey = "product-id"
+    const productId = "My New Product"
+    // const value = "77";
+
+    increment(dynamoTableName, dynamoPartitionKey, productId);
+}
+
 main();
 
-export default { increment, get, set, main };
+module.exports = { increment, get, set, main };
