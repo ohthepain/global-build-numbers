@@ -29,7 +29,7 @@ jobs:
   buildSomething:
     runs-on: ubuntu-latest
     steps:
-      - uses: ohthepain/global-build-numbers@v1
+      - uses: ohthepain/global-build-numbers@main
       # All commands after this point have access to the AWS CLI
       - run: aws s3 ls
         env:

@@ -67,6 +67,43 @@ async function increment() {
     }
 }
 
+async function get() {
+    try {
+        // const dynamoTableName = core.getInput('DYNAMO_TABLE_NAME');
+        // const dynamoPartitionKey = core.getInput('DYNAMO_PARTITION_KEY');
+        // const productId = core.getInput('PRODUCT_ID');
+
+        const dynamoTableName = "build-numbers"
+        const dynamoPartitionKey = "product-id"
+        const productId = "My Product"
+
+        const keyJson = { [dynamoPartitionKey]: { "S": `${productId}` } };        
+        const key = JSON.stringify(keyJson);
+
+        let value;
+        const command = `aws dynamodb get-item --table-name ${dynamoTableName} --key`
+        // console.log(command);
+        await exec(command, [key], {
+            listeners: {
+                stdout: (data) => {
+                    const output = data.toString();
+                    // console.log(output)
+                    value = JSON.parse(output).Item.VERSION.N;
+                    // console.log(value)
+                },
+                stderr: (data) => {
+                    console.error(data.toString());
+                }
+            }
+        });
+        core.setOutput("result", value);
+        return value;
+    } catch (error) {
+        console.error("Error getting value from DynamoDB item:", error);
+        return null;
+    }    
+}
+
 async function set() {
     try {
         // const awsAccessKeyId = core.getInput('AWS_ACCESS_KEY_ID');
@@ -138,6 +175,9 @@ async function main() {
         case "increment":
             await increment();
             break;
+        case "get":
+            await get();
+            break;
         case "set":
             await set();
             break;
@@ -148,5 +188,4 @@ async function main() {
 
 main();
 
-export default { main, set, increment };
-
+export default { increment, get, set, main };
