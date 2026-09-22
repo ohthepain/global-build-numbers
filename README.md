@@ -11,20 +11,28 @@ Sometimes you need version numbers to be unique across multiple branches and for
 You can manage multiple version sequences by giving them your own product id strings.
 
 ## Supported Platforms
+
 - windows-latest
 - macos-latest
 - ubuntu-latest
 
 To considering adding: ubuntu-16.04, windows-2016, windows-2019, macOS-10.14, ubuntu-18.04
 
+## Creating the Dynamo Table
+
+Create a DynamoDB table in your AWS account.
+
+- The name will go into DYNAMO_TABLE_NAME (i.e., 'global-build-numbers')
+- Partion key will go into DYNAMO_KEY_NAME (i.e, 'project-name')
+
 ## Usage
 
 Example
-````yaml
+
+```yaml
 name: Bump Version Test
 
-on:
-  push
+on: push
 jobs:
   buildSomething:
     runs-on: ubuntu-latest
@@ -33,10 +41,10 @@ jobs:
       # All commands after this point have access to the AWS CLI
       - run: aws s3 ls
         env:
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-            DYNAMO_TABLE_NAME: "global-build-numbers"
-            DYNAMO_KEY_NAME: "project-name"
-            PRODUCT_ID: "yoga-config-number"
-````
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+          DYNAMO_TABLE_NAME: "global-build-numbers"
+          DYNAMO_PARTITION_KEY: "project-name"
+          PRODUCT_ID: "my-product-platform"
+```
