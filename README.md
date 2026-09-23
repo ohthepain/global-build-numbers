@@ -25,6 +25,15 @@ Create a DynamoDB table in your AWS account.
 - The name will go into DYNAMO_TABLE_NAME (i.e., 'global-build-numbers')
 - Partion key will go into DYNAMO_KEY_NAME (i.e, 'project-name')
 
+## Secrets
+
+You will need to add the following secrets to your ci enviroment. For example, in GitHub you would go to settings/environments.
+
+- AWS_ACCESS_KEY_ID
+- AWS_SECRET_ACCESS_KEY
+- AWS_REGION
+- AWS_ROLE_ARN_BUILD_NUMBERS
+
 ## Usage
 
 Example
